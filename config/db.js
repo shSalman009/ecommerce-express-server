@@ -3,13 +3,11 @@ const mongoose = require("mongoose");
 const connectDB = async () => {
   try {
     // mongodb connection string
-    const con = await mongoose.connect(
-      `${process.env.MONGO_CONNECTION_STRING}/mern-ecommerce`,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
+    const con = await mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
+      dbName: process.env.MONGO_DB_NAME,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
     console.log(`MongoDB Connected: ${con.connection.host}`);
   } catch (err) {
