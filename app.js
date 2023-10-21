@@ -4,6 +4,7 @@ const rateLimit = require("express-rate-limit");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const expressListRoutes = require("express-list-routes");
 
 // internal imports
 const { notFoundHandler, errorHandler } = require("./middlewares/errorHandler");
@@ -47,7 +48,20 @@ app.use(
 
 // routes
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  const endpoints = expressListRoutes(app);
+  let result = "";
+  endpoints.forEach((route) => {
+    result += `<li>${route.method} - <a href="${route.path}">${route.path}</a></li>`;
+  });
+  res.send(`
+  <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
+   <h1>Welcome to Ecommerce API</h1>
+    <h3>Available Routes</h3>
+    <ul>
+      ${result}
+    </ul>
+  </div>
+  `);
 });
 
 app.use("/users", userHandler);
