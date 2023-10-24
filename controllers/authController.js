@@ -74,7 +74,12 @@ const login = async (req, res, next) => {
 // logout user
 const logout = async (req, res, next) => {
   try {
-    res.clearCookie("accessToken");
+    res.cookie("accessToken", "", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+      sameSite: "none",
+      secure: true,
+    });
 
     sendSuccessResponse(res, null, "User logged out successfully!", 200);
   } catch (error) {
