@@ -41,7 +41,7 @@ dotenv.config();
 // cors
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://e-commerce20.netlify.app",
     credentials: true,
   })
 );
