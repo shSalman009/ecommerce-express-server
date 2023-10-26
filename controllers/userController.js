@@ -151,14 +151,14 @@ const forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw createError(404, "User not found");
+      throw createError(404, "User not found with this email address");
     }
 
     const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    const resetPasswordLink = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
+    const resetPasswordLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
     // send email
     const emailData = {

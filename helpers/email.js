@@ -49,7 +49,7 @@ const sendEmail = async (emailData) => {
   };
 
   try {
-    // await transporter.sendMail(message);
+    await transporter.sendMail(message);
   } catch (error) {
     throw createError(500, "Error sending email");
   }
