@@ -35,7 +35,7 @@ const getProducts = async (req, res, next) => {
   }
 
   try {
-    const products = await Product.find(query);
+    const products = await Product.find(query).populate("category");
 
     if (!products || products.length === 0) {
       throw createError(404, "No products found");
@@ -103,38 +103,24 @@ const getProduct = async (req, res, next) => {
 // update product
 const updateProduct = async (req, res, next) => {
   const { slug } = req.params;
+  const { newImages, imagesToRemove, ...productData } = req.body;
 
-  const allowedUpdates = [
-    "name",
-    "description",
-    "images",
-    "price",
-    "discount",
-    "stock",
-    "sold",
-    "brand",
-    "category",
-    "features",
-    "specifications",
-  ];
   try {
-    const updates = Object.keys(req.body);
+    const updates = Object.keys(productData);
 
     if (updates.length === 0) {
       throw createError(400, "No data provided for update");
     }
 
-    const isValidOperation = updates.every((update) =>
-      allowedUpdates.includes(update)
+    const updatedProduct = await Product.findOneAndUpdate(
+      { slug },
+
+      productData,
+
+      {
+        new: true,
+      }
     );
-
-    if (!isValidOperation) {
-      throw createError(400, "Invalid data provided for update");
-    }
-
-    const updatedProduct = await Product.findOneAndUpdate({ slug }, req.body, {
-      new: true,
-    });
 
     if (!updatedProduct) {
       throw createError(404, "Product not found");

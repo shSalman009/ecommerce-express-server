@@ -59,12 +59,12 @@ const getCategory = async (req, res, next) => {
 // update a category
 const updateCategory = async (req, res, next) => {
   const { slug } = req.params;
-  const { name } = req.body;
+  const { name, image } = req.body;
 
   try {
     const updatedCategory = await Category.findOneAndUpdate(
       { slug: slug },
-      { name: name, slug: slugify(name) },
+      { name: name, slug: slugify(name), image: image },
       { new: true }
     );
 

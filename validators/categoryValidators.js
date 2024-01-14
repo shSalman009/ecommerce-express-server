@@ -1,5 +1,4 @@
 const { check } = require("express-validator");
-const createError = require("http-errors");
 
 const categoryValidator = [
   check("name")

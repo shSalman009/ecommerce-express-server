@@ -22,14 +22,22 @@ const {
 const { runValidation } = require("../validators");
 const { isLoggedIn, isAdmin } = require("../middlewares/authMiddleware");
 const validateMongooseId = require("../middlewares/validateMongooseId");
+const {
+  parser,
+  imageUpdate,
+  imageUpload,
+} = require("../middlewares/imageUpload");
+const parseJsonData = require("../middlewares/parseJson");
 
 const router = express.Router();
-
 // create a new product
 router.post(
   "/",
   isLoggedIn,
   isAdmin,
+  parser.array("images"),
+  parseJsonData,
+  imageUpload.multiple,
   createProductValidator,
   runValidation,
   createProduct
@@ -49,6 +57,9 @@ router.patch(
   "/:slug",
   isLoggedIn,
   isAdmin,
+  parser.array("newImages"),
+  parseJsonData,
+  imageUpdate.multiple,
   updateProductValidator,
   runValidation,
   updateProduct

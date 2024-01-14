@@ -9,6 +9,12 @@ const {
 const { categoryValidator } = require("../validators/categoryValidators");
 const { runValidation } = require("../validators");
 const { isLoggedIn, isAdmin } = require("../middlewares/authMiddleware");
+const {
+  parser,
+  imageUpload,
+  imageUpdate,
+} = require("../middlewares/imageUpload");
+const parseJsonData = require("../middlewares/parseJson");
 
 const router = express.Router();
 
@@ -17,6 +23,9 @@ router.post(
   "/",
   isLoggedIn,
   isAdmin,
+  parser.single("image"),
+  parseJsonData,
+  imageUpload.single,
   categoryValidator,
   runValidation,
   createCategory
@@ -33,6 +42,9 @@ router.patch(
   "/:slug",
   isLoggedIn,
   isAdmin,
+  parser.single("image"),
+  parseJsonData,
+  imageUpdate.single,
   categoryValidator,
   runValidation,
   updateCategory

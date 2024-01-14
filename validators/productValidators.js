@@ -36,8 +36,7 @@ const createProductValidator = [
     .withMessage("Product price must be a positive number"),
 
   check("discount")
-    .notEmpty()
-    .withMessage("Product discount is required")
+    .optional()
     .isNumeric()
     .withMessage("Product discount must be a number")
     .isFloat({ min: 0 })
@@ -56,8 +55,8 @@ const createProductValidator = [
     .withMessage("Product brand is required")
     .isString()
     .withMessage("Product brand must be a string")
-    .isLength({ min: 3, max: 100 })
-    .withMessage("Product brand must be between 3 and 100 characters"),
+    .isLength({ min: 2, max: 100 })
+    .withMessage("Product brand must be between 2 and 100 characters"),
 
   check("category")
     .notEmpty()
@@ -83,9 +82,10 @@ const createProductValidator = [
     .custom((specifications) => {
       const keys = Object.keys(specifications);
       if (keys.length === 0) {
-        throw new Error("Product specifications must not be empty");
+        return true;
       }
       if (
+        keys.length > 0 &&
         !keys.every(
           (key) =>
             typeof key === "string" && typeof specifications[key] === "string"
@@ -156,8 +156,8 @@ const updateProductValidator = [
     .optional()
     .isString()
     .withMessage("Product brand must be a string")
-    .isLength({ min: 3, max: 100 })
-    .withMessage("Product brand must be between 3 and 100 characters"),
+    .isLength({ min: 2, max: 100 })
+    .withMessage("Product brand must be between 2 and 100 characters"),
 
   check("category")
     .optional()
@@ -181,9 +181,10 @@ const updateProductValidator = [
     .custom((specifications) => {
       const keys = Object.keys(specifications);
       if (keys.length === 0) {
-        throw new Error("Product specifications must not be empty");
+        return true;
       }
       if (
+        keys.length > 0 &&
         !keys.every(
           (key) =>
             typeof key === "string" && typeof specifications[key] === "string"

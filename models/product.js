@@ -34,7 +34,7 @@ const ProductSchema = mongoose.Schema(
     },
     discount: {
       type: Number,
-      required: true,
+      default: 0,
     },
     stock: {
       type: Number,
@@ -47,7 +47,7 @@ const ProductSchema = mongoose.Schema(
     brand: {
       type: String,
       required: true,
-      minlength: 3,
+      minlength: 2,
       maxlength: 100,
     },
 

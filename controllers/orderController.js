@@ -90,7 +90,10 @@ const deleteOrder = async (req, res, next) => {
 // get all orders
 const getOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({});
+    const orders = await Order.find({}).populate([
+      { path: "products.product" },
+      { path: "user", select: "-password" },
+    ]);
 
     if (!orders) {
       throw createError(404, "No orders found");
@@ -106,7 +109,10 @@ const getOrders = async (req, res, next) => {
 const getOrder = async (req, res, next) => {
   const orderId = req.params.id;
   try {
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate([
+      { path: "products.product" },
+      { path: "user", select: "-password" },
+    ]);
 
     if (!order) {
       throw createError(404, "Order not found");

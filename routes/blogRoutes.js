@@ -12,6 +12,12 @@ const {
   getBlog,
 } = require("../controllers/blogController");
 const { isLoggedIn, isAdmin } = require("../middlewares/authMiddleware");
+const {
+  parser,
+  imageUpload,
+  imageUpdate,
+} = require("../middlewares/imageUpload");
+const parseJsonData = require("../middlewares/parseJson");
 
 const router = express.Router();
 
@@ -20,6 +26,9 @@ router.post(
   "/",
   isLoggedIn,
   isAdmin,
+  parser.single("image"),
+  parseJsonData,
+  imageUpload.single,
   createBlogValidator,
   runValidation,
   createBlog
@@ -30,6 +39,9 @@ router.patch(
   "/:id",
   isLoggedIn,
   isAdmin,
+  parser.single("image"),
+  parseJsonData,
+  imageUpdate.single,
   updateBlogValidator,
   runValidation,
   updateBlog

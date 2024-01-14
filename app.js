@@ -6,6 +6,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const expressListRoutes = require("express-list-routes");
 
+// load env variables
+dotenv.config();
+
 // internal imports
 const { notFoundHandler, errorHandler } = require("./middlewares/errorHandler");
 const userHandler = require("./routes/userRoutes");
@@ -34,9 +37,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // app.use(limiter);
-
-// load env variables
-dotenv.config();
 
 // cors
 app.use(

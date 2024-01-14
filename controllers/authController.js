@@ -46,14 +46,12 @@ const login = async (req, res, next) => {
       throw createError(400, "Invalid credentials!");
     }
 
+    delete user._doc.password;
+
     // create token
-    const token = jwt.sign(
-      { id: user._id, email: user.email, isAdmin: user.isAdmin },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
+    const token = jwt.sign(user.toJSON(), process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
     // set cookie
     res.cookie("accessToken", token, {
@@ -62,9 +60,6 @@ const login = async (req, res, next) => {
       sameSite: "none",
       secure: true,
     });
-
-    // remove password from response
-    delete user._doc.password;
     sendSuccessResponse(res, user, "User logged in successfully!", 200);
   } catch (error) {
     next(error);
