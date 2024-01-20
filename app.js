@@ -41,7 +41,10 @@ app.use(cookieParser());
 // cors
 app.use(
   cors({
-    origin: "https://e-commerce20.netlify.app",
+    origin: [
+      "https://e-commerce20.netlify.app",
+      "https://ecommerce-20-dashboard.netlify.app",
+    ],
     credentials: true,
   })
 );
