@@ -2,6 +2,7 @@ const { sendSuccessResponse } = require("../helpers/response");
 const Category = require("../models/category");
 const slugify = require("slugify");
 const createError = require("http-errors");
+const { imageRemove } = require("../middlewares/imageUpload");
 
 // create a category
 const createCategory = async (req, res, next) => {
@@ -59,7 +60,7 @@ const getCategory = async (req, res, next) => {
 // update a category
 const updateCategory = async (req, res, next) => {
   const { slug } = req.params;
-  const { name, image } = req.body;
+  const { name, image, imageToRemove } = req.body;
 
   try {
     const updatedCategory = await Category.findOneAndUpdate(
@@ -70,6 +71,10 @@ const updateCategory = async (req, res, next) => {
 
     if (!updatedCategory) {
       throw createError(404, "Category not found to update");
+    }
+
+    if (imageToRemove) {
+      await imageRemove(imageToRemove);
     }
 
     sendSuccessResponse(
@@ -92,6 +97,10 @@ const deleteCategory = async (req, res, next) => {
 
     if (!deletedCategory) {
       throw createError(404, "Category not found to delete");
+    }
+
+    if (deletedCategory.image) {
+      await imageRemove(deletedCategory.image);
     }
 
     sendSuccessResponse(res, null, "Category deleted successfully!", 200);

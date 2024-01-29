@@ -1,4 +1,5 @@
 const { sendSuccessResponse } = require("../helpers/response");
+const { imageRemove } = require("../middlewares/imageUpload");
 const Product = require("../models/product");
 const createError = require("http-errors");
 const slugify = require("slugify");
@@ -126,6 +127,10 @@ const updateProduct = async (req, res, next) => {
       throw createError(404, "Product not found");
     }
 
+    if (imagesToRemove) {
+      await Promise.all(imagesToRemove.map((image) => imageRemove(image)));
+    }
+
     sendSuccessResponse(
       res,
       updatedProduct,
@@ -146,6 +151,12 @@ const deleteProduct = async (req, res, next) => {
 
     if (!deletedProduct) {
       throw createError(404, "Product not found");
+    }
+
+    if (deletedProduct.images) {
+      await Promise.all(
+        deletedProduct.images.map((image) => imageRemove(image))
+      );
     }
 
     sendSuccessResponse(res, null, "Product deleted successfully!", 200);

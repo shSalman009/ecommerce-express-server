@@ -39,6 +39,10 @@ const updateBlog = async (req, res, next) => {
       throw createError(500, "Error in updating blog");
     }
 
+    if (req.body.imageToRemove) {
+      await imageRemove(req.body.imageToRemove);
+    }
+
     sendSuccessResponse(res, updatedBlog, "Blog updated successfully!", 200);
   } catch (error) {
     next(error);
@@ -55,6 +59,11 @@ const deleteBlog = async (req, res, next) => {
     if (!deletedBlog) {
       throw createError(500, "Error in deleting blog");
     }
+
+    if (deletedBlog.image) {
+      await imageRemove(deletedBlog.image);
+    }
+
     sendSuccessResponse(res, null, "Blog deleted successfully!", 200);
   } catch (error) {
     next(error);

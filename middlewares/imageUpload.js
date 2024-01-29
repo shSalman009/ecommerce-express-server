@@ -64,57 +64,47 @@ imageUpload.single = async (req, res, next) => {
 const imageUpdate = {};
 
 imageUpdate.multiple = async (req, res, next) => {
-  const imagesToRemove = req.body.imagesToRemove;
-  let currentImages = req.body.images;
-  let newImages = [];
+  try {
+    let currentImages = req.body.images;
+    let newImages = [];
 
-  for (const image of imagesToRemove) {
-    const publicId = extractPublicId(image);
-    try {
-      await cloudinary.uploader.destroy(publicId);
-    } catch (error) {
-      console.error(error);
-      next(error);
+    if (req.files && req.files.length > 0) {
+      newImages = req.files.map((file) => file.path);
     }
-  }
 
-  if (req.files && req.files.length > 0) {
-    newImages = req.files.map((file) => file.path);
+    req.body.images = [...currentImages, ...newImages];
+    next();
+  } catch (error) {
+    next(error);
   }
-
-  req.body.images = [...currentImages, ...newImages];
-  next();
 };
 
 imageUpdate.single = async (req, res, next) => {
-  const imageToRemove = req.body.imageToRemove;
-  let currentImage = req.body.image;
-  let newImage = "";
-
-  if (imageToRemove) {
-    const publicId = extractPublicId(imageToRemove);
-    try {
-      const result = await cloudinary.uploader.destroy(publicId);
-
-      if (result.result === "ok") {
-        currentImage = "";
-      }
-    } catch (error) {
-      console.error(error);
-      next(error);
+  try {
+    if (req.file) {
+      req.body.image = req.file.path;
     }
+    next();
+  } catch (error) {
+    next(error);
   }
+};
 
-  if (req.file) {
-    newImage = req.file.path;
+// remove image from cloudinary
+const imageRemove = async (image) => {
+  const publicId = extractPublicId(image);
+  try {
+    await cloudinary.uploader.destroy(publicId);
+    console.log("Removed image : ", image);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
-
-  req.body.image = newImage || currentImage;
-  next();
 };
 
 module.exports = {
   parser,
   imageUpdate,
   imageUpload,
+  imageRemove,
 };
